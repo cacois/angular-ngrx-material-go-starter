@@ -5,7 +5,7 @@
     </mat-card-header>
     <mat-card-content>
       <mat-list>
-          <mat-list-item *ngFor="let task of tasks">
+          <mat-list-item *ngFor="let task of tasks$ | async">
             <mat-icon mat-list-icon>note</mat-icon>
             <h4 mat-line>{{task.Name}}</h4>
             <p mat-line> {{task.Description}} </p>
@@ -25,5 +25,20 @@
       </form>
     </mat-card-actions>
   </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>Reactive Counter</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        <span matBadge="{{ count$ | async }}" matBadgeOverlap="false">Count</span>
+      </p>
+      <button mat-raised-button color="primary" (click)="increment()">Increment</button>
+      <button mat-raised-button color="secondary" (click)="decrement()">Decrement</button>
+      <button mat-raised-button color="warn" (click)="reset()">Reset Counter</button>
+    </mat-card-content>
+  </mat-card>
+
 </div>
 <router-outlet></router-outlet>

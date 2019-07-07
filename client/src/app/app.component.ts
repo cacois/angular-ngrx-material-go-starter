@@ -1,9 +1,20 @@
 import {Component} from '@angular/core';
 import {NgForm} from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { addTask, removeTask } from './actions/tasks.actions';
+import { increment, decrement, reset } from './actions/counter.actions';
 
-@Component({selector: 'app-root', templateUrl: './app.component.html', styleUrls: ['./app.component.scss']})
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
+})
 export class AppComponent {
   title = 'client-app';
+  count$: Observable<number>;
+  tasks$: Observable<any[]>;
+
   tasks = [
     {
       ID: 1,
@@ -20,17 +31,30 @@ export class AppComponent {
     }
   ];
 
-  removeTask(id: number) {
-    this.tasks = this
-      .tasks
-      .filter(task => task.ID !== id);
+  constructor(private store: Store<{ count: number }>) {
+    this.count$ = store.pipe(select('count'));
+    this.tasks$ = store.pipe(select('tasks'));
+  }
+
+  removeTask(idToRemove: number) {
+    console.log('component::removeTask');
+    this.store.dispatch(removeTask({ id: idToRemove }));
   }
 
   addTask(f: NgForm) {
-    let maxId = 0;
-    for(let task of this.tasks) {
-      maxId = task.ID > maxId ? task.ID : maxId;
-    }
-    this.tasks.push({ID: maxId + 1, Name: f.value.name, Description: f.value.description});
+    console.log('component::addTask');
+    this.store.dispatch(addTask({ name: f.value.name, description: f.value.description }));
+  }
+
+  increment() {
+    this.store.dispatch(increment());
+  }
+ 
+  decrement() {
+    this.store.dispatch(decrement());
+  }
+ 
+  reset() {
+    this.store.dispatch(reset());
   }
 }
